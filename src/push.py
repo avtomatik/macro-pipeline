@@ -1,23 +1,26 @@
-import os
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 10 21:43:05 2025
+
+@author: alexandermikhailov
+"""
+
+
 import zipfile
 from pathlib import Path
-from zipfile import ZipFile
 
-from pandas import DataFrame
+import pandas as pd
 
 
-def push_data_frame_to_csv_zip(
-    df: DataFrame,
-    file_name: str,
-    path_export: str = '../data'
-) -> None:
-    kwargs = {
-        'path_or_buf': Path(path_export).joinpath(file_name),
-        'index': True,
-        'encoding': 'utf-8-sig'
-    }
-    df.to_csv(**kwargs)
-    os.chdir(path_export)
-    with ZipFile(f'{os.path.splitext(file_name)[0]}.zip', 'w') as archive:
-        archive.write(file_name, compress_type=zipfile.ZIP_DEFLATED)
-        os.unlink(Path(path_export).joinpath(file_name))
+def push_to_csv_zip(df: pd.DataFrame, file_path: Path) -> None:
+    df.to_csv(file_path, index=True, encoding='utf-8-sig')
+
+    with zipfile.ZipFile(file_path.with_suffix('.zip'), mode='w') as archive:
+        archive.write(
+            filename=file_path,
+            arcname=file_path.name,
+            compress_type=zipfile.ZIP_DEFLATED,
+        )
+
+    file_path.unlink()
