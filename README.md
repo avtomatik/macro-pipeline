@@ -1,28 +1,117 @@
-# Make Dataset
+# 📦 ETL Flat Dataset
 
-This projects involves data processing using Python. Below are the steps to set up your environment and run dataset script.
+A lightweight, modular ETL pipeline built in Python using **Polars**, designed for reproducible data processing and containerized execution.
 
-## Setup
+The project ingests raw macroeconomic datasets, applies transformations, and outputs a structured ZIP archive — all within a Dockerized environment.
 
-### Create a Virtual Environment
+---
 
-```bash
-python3 -m venv venv
+## ⚙️ Features
+
+* Modular ETL pipeline (load → transform → save)
+* Built with **Polars** for fast columnar data processing
+* Dockerized execution for reproducibility
+* Clean separation of core pipeline components
+* Produces compressed dataset outputs (`.zip`)
+
+---
+
+## 🧱 Project Structure
+
+```
+etl-flat-dataset/
+├── etl_flat_dataset/
+│   ├── core/
+│   │   ├── paths.py
+│   │   └── pipeline.py
+│   └── main.py
+├── data/
+│   ├── raw/
+│   └── processed/
+├── Dockerfile
+├── pyproject.toml
+└── README.md
 ```
 
-### Activate the Virtual Environment
-```bash
-source venv/bin/activate
-```
+---
 
-### Install Dependencies
-```bash
-python3 -m pip install --upgrade pip
-pip install -r requirements.txt --no-cache-dir
-```
+## 🚀 Running the Project
 
-## Run the Dataset Script
+### 🐳 Using Docker (recommended)
+
+#### Build image
 
 ```bash
-python3 -m etl_flat_dataset
+docker build -t etl-flat-dataset .
 ```
+
+#### Run pipeline (with persistent output)
+
+```bash
+docker run --rm \
+  -v $(pwd)/data:/app/data \
+  etl-flat-dataset
+```
+
+Output will be saved in:
+
+```
+data/processed/
+```
+
+---
+
+## 🧪 Local Development (optional)
+
+### Install dependencies
+
+```bash
+uv venv
+source .venv/bin/activate
+
+uv sync
+```
+
+### Run pipeline
+
+```bash
+uv run python -m etl_flat_dataset.main
+```
+
+---
+
+## 📦 Output
+
+The pipeline generates a compressed dataset:
+
+```
+data/processed/usa_macro_1950_2015.zip
+```
+
+---
+
+## 🧠 Architecture Overview
+
+The pipeline is composed of three main abstractions:
+
+* **Loader** → reads raw CSV files
+* **Transformer** → applies column transformations
+* **Saver** → writes processed output (ZIP archive)
+
+This design allows easy extension of the pipeline with new data sources or transformations.
+
+---
+
+## 🚧 Future Improvements
+
+* Add CLI interface (`etl run`)
+* Add config-driven pipeline definitions
+* Parallel processing for large datasets
+* Zig-based transformation module (experimental)
+* S3 / cloud storage support
+
+---
+
+## 📜 License
+
+MIT License

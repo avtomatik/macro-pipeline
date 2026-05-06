@@ -1,21 +1,15 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM python:3.11-slim
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY . /app
 
-# Create a virtual environment
-RUN python3 -m venv venv
+RUN python -m pip install --upgrade pip
 
-# Upgrade pip and install dependencies into the virtual environment
-RUN ./venv/bin/pip install --upgrade pip
-RUN ./venv/bin/pip install -r requirements.txt --no-cache-dir
+RUN pip install polars>=1.40.1
 
-# Set the virtual environment's bin directory to the PATH
-ENV PATH="/app/venv/bin:$PATH"
-
-# Run the dataset script when container launches
-CMD [ "python3", "src/dataset.py" ]
+CMD ["python", "-m", "etl_flat_dataset.main"]

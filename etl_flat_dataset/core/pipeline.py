@@ -21,7 +21,7 @@ class DataSaver(Protocol):
 class CsvLoader(DataLoader):
     def load(self, file_path: Path) -> pl.DataFrame:
         df = pl.read_csv(file_path)
-        df = df.rename({df.columns[0]: 'year'})
+        df = df.rename({df.columns[0]: "year"})
         return df
 
 
@@ -41,12 +41,12 @@ class InsertIndicatorAndSwapCols(DataTransformer):
 
         return (
             df.select([year_col, value_col])
-            .rename({year_col: 'year', value_col: 'value'})
+            .rename({year_col: "year", value_col: "value"})
             .with_columns(
-                pl.col('value').cast(pl.Float64),
-                pl.lit(value_col).alias('indicator')
+                pl.col("value").cast(pl.Float64),
+                pl.lit(value_col).alias("indicator"),
             )
-            .select(['year', 'indicator', 'value'])
+            .select(["year", "indicator", "value"])
         )
 
 
@@ -62,9 +62,9 @@ class InMemoryZipSaver(DataSaver):
         csv_buffer.seek(0)
 
         with zipfile.ZipFile(
-            file_path.with_suffix('.zip'),
-            mode='w',
-            compression=zipfile.ZIP_DEFLATED
+            file_path.with_suffix(".zip"),
+            mode="w",
+            compression=zipfile.ZIP_DEFLATED,
         ) as archive:
             archive.writestr(file_path.name, csv_buffer.getvalue())
 
@@ -90,6 +90,6 @@ class DataPipeline:
                     chunk = transformer.transform(chunk)
                 frames.append(chunk)
 
-        df = pl.concat(frames, how='vertical', rechunk=True)
+        df = pl.concat(frames, how="vertical", rechunk=True)
 
         self.saver.save(df, output_path)
