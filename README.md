@@ -1,18 +1,18 @@
-# 📦 Macro Pipeline
+# 📦 Macro Pipeline (Rust)
 
-A lightweight, modular ETL pipeline built in Python using **Polars**, designed for reproducible data processing and containerized execution.
+A modular ETL pipeline written in **Rust** using **Polars**, designed to process macroeconomic datasets and produce a compressed output archive.
 
-The project ingests raw macroeconomic datasets, applies transformations, and outputs a structured ZIP archive — all within a Dockerized environment.
+The project ingests raw CSV files, applies transformations, and writes a unified dataset to a ZIP file — all within a containerized environment.
 
 ---
 
 ## ⚙️ Features
 
 * Modular ETL pipeline (load → transform → save)
-* Built with **Polars** for fast columnar data processing
-* Dockerized execution for reproducibility
-* Clean separation of core pipeline components
-* Produces compressed dataset outputs (`.zip`)
+* Built with **Polars (Rust)** for columnar data processing
+* Lazy execution model with a single materialization step
+* Dockerized for reproducible runs
+* Outputs compressed datasets (`.zip`)
 
 ---
 
@@ -20,16 +20,17 @@ The project ingests raw macroeconomic datasets, applies transformations, and out
 
 ```
 macro-pipeline/
-├── macro_pipeline/
+├── src/
 │   ├── core/
-│   │   ├── paths.py
-│   │   └── pipeline.py
-│   └── main.py
+│   │   ├── mod.rs
+│   │   ├── paths.rs
+│   │   └── pipeline.rs
+│   └── main.rs
 ├── data/
 │   ├── raw/
 │   └── processed/
+├── Cargo.toml
 ├── Dockerfile
-├── pyproject.toml
 └── README.md
 ```
 
@@ -37,23 +38,17 @@ macro-pipeline/
 
 ## 🚀 Running the Project
 
-### 🐳 Using Docker (recommended)
-
-#### Build image
+### 🐳 Using Docker
 
 ```bash
 docker build -t macro-pipeline .
-```
 
-#### Run pipeline (with persistent output)
-
-```bash
 docker run --rm \
   -v $(pwd)/data:/app/data \
   macro-pipeline
 ```
 
-Output will be saved in:
+Output will be written to:
 
 ```
 data/processed/
@@ -61,28 +56,15 @@ data/processed/
 
 ---
 
-## 🧪 Local Development (optional)
-
-### Install dependencies
+## 🧪 Local Development
 
 ```bash
-uv venv
-source .venv/bin/activate
-
-uv sync
-```
-
-### Run pipeline
-
-```bash
-uv run python -m macro_pipeline.main
+cargo run --release
 ```
 
 ---
 
 ## 📦 Output
-
-The pipeline generates a compressed dataset:
 
 ```
 data/processed/usa_macro_1950_2015.zip
@@ -92,26 +74,35 @@ data/processed/usa_macro_1950_2015.zip
 
 ## 🧠 Architecture Overview
 
-The pipeline is composed of three main abstractions:
+The pipeline is composed of three abstractions:
 
-* **Loader** → reads raw CSV files
-* **Transformer** → applies column transformations
-* **Saver** → writes processed output (ZIP archive)
+* **Loader** → reads CSV files into Polars `LazyFrame`
+* **Transformer** → applies schema normalization and transformations
+* **Saver** → materializes the result and writes a ZIP archive
 
-This design allows easy extension of the pipeline with new data sources or transformations.
+All datasets are combined into a single lazy execution plan and evaluated once.
+
+---
+
+## ⚠️ Notes
+
+* The pipeline currently loads and processes all data in memory.
+* Output is buffered before being written to the ZIP archive.
+* This makes the implementation simple, but not optimized for large datasets.
 
 ---
 
 ## 🚧 Future Improvements
 
-* Add CLI interface (`etl run`)
-* Add config-driven pipeline definitions
-* Parallel processing for large datasets
-* Zig-based transformation module (experimental)
-* S3 / cloud storage support
+* Streaming / chunked processing to reduce memory usage
+* CLI interface for configurable runs
+* Schema validation and error handling improvements
+* Support for alternative storage backends
 
 ---
 
 ## 📜 License
 
 MIT License
+
+---

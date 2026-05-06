@@ -1,9 +1,0 @@
-[project]
-name = "macro-pipeline"
-version = "0.1.0"
-description = "Modular ETL pipeline in Python (Polars) with Docker support, demonstrating reproducible data processing workflows and clean architecture design."
-readme = "README.md"
-requires-python = ">=3.14"
-dependencies = [
-    "polars>=1.40.1",
-]
