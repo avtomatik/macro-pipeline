@@ -1,15 +1,11 @@
-FROM python:3.11-slim
-
+FROM rust:latest as builder
+ 
 WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY . /app
-
-RUN python -m pip install --upgrade pip
-
-RUN pip install polars>=1.40.1
-
-CMD ["python", "-m", "macro_pipeline.main"]
+COPY . .
+RUN cargo build --release
+ 
+FROM debian:bookworm-slim
+WORKDIR /app
+COPY --from=builder /app/target/release/macro-pipeline .
+ 
+CMD ["./macro-pipeline"]
