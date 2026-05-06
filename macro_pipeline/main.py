@@ -1,7 +1,7 @@
-from etl_flat_dataset.core.paths import DATA_OUT_DIR, DATA_RAW_DIR, FILE_NAME
-from etl_flat_dataset.core.pipeline import (CsvLoader, DataPipeline,
-                                            InMemoryZipSaver,
-                                            InsertIndicatorAndSwapCols)
+from macro_pipeline.core.paths import DATA_OUT_DIR, DATA_RAW_DIR, FILE_NAME
+from macro_pipeline.core.pipeline import (CsvLoader, DataPipeline,
+                                          InMemoryZipSaver,
+                                          InsertIndicatorAndSwapCols)
 
 
 def main() -> None:

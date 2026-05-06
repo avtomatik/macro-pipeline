@@ -1,4 +1,4 @@
-# 📦 ETL Flat Dataset
+# 📦 Macro Pipeline
 
 A lightweight, modular ETL pipeline built in Python using **Polars**, designed for reproducible data processing and containerized execution.
 
@@ -19,8 +19,8 @@ The project ingests raw macroeconomic datasets, applies transformations, and out
 ## 🧱 Project Structure
 
 ```
-etl-flat-dataset/
-├── etl_flat_dataset/
+macro-pipeline/
+├── macro_pipeline/
 │   ├── core/
 │   │   ├── paths.py
 │   │   └── pipeline.py
@@ -42,7 +42,7 @@ etl-flat-dataset/
 #### Build image
 
 ```bash
-docker build -t etl-flat-dataset .
+docker build -t macro-pipeline .
 ```
 
 #### Run pipeline (with persistent output)
@@ -50,7 +50,7 @@ docker build -t etl-flat-dataset .
 ```bash
 docker run --rm \
   -v $(pwd)/data:/app/data \
-  etl-flat-dataset
+  macro-pipeline
 ```
 
 Output will be saved in:
@@ -75,7 +75,7 @@ uv sync
 ### Run pipeline
 
 ```bash
-uv run python -m etl_flat_dataset.main
+uv run python -m macro_pipeline.main
 ```
 
 ---

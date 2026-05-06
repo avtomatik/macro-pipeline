@@ -12,4 +12,4 @@ RUN python -m pip install --upgrade pip
 
 RUN pip install polars>=1.40.1
 
-CMD ["python", "-m", "etl_flat_dataset.main"]
+CMD ["python", "-m", "macro_pipeline.main"]
